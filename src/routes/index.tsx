@@ -1,24 +1,156 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Moon, Sun } from "lucide-react";
+import ToolGrid from "@/components/ToolGrid";
+import SearchBar from "@/components/SearchBar";
+import FilterBar from "@/components/FilterBar";
+import Footer from "@/components/Footer";
+import { useTools } from "@/hooks/useTools";
+import { useTheme } from "@/hooks/useTheme";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Spectra — Discover the Best AI Tools" },
+      {
+        name: "description",
+        content:
+          "Spectra is a curated directory of 250+ AI tools. Search, filter by category and pricing, and find the right tool for your workflow.",
+      },
+      { property: "og:title", content: "Spectra — Discover the Best AI Tools" },
+      {
+        property: "og:description",
+        content:
+          "A curated directory of 250+ AI tools. Search, filter by category and pricing, and find the right tool for your workflow.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedPricing, setSelectedPricing] = useState("All");
+  const [selectedSort, setSelectedSort] = useState("Popular");
+  const { theme, toggle } = useTheme();
+
+  const { tools, isLoading, error } = useTools();
+
+  const displayTools = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    const filtered = tools.filter((tool) => {
+      const matchesSearch =
+        tool.name.toLowerCase().includes(q) ||
+        tool.tagline.toLowerCase().includes(q) ||
+        tool.category.toLowerCase().includes(q);
+      const matchesCategory = selectedCategory === "All" || tool.category === selectedCategory;
+      const matchesPricing = selectedPricing === "All" || tool.pricing === selectedPricing;
+      return matchesSearch && matchesCategory && matchesPricing;
+    });
+
+    const sorted = [...filtered];
+    switch (selectedSort) {
+      case "Newest":
+        sorted.sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""));
+        break;
+      case "A-Z":
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        sorted.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        break;
+    }
+    return sorted;
+  }, [searchQuery, selectedCategory, selectedPricing, selectedSort, tools]);
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
+    <div className="flex min-h-screen flex-col bg-background">
+      <div
+        className="pointer-events-none fixed inset-0"
+        style={{
+          background: `radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in oklab, var(--primary) 8%, transparent), transparent),
+            radial-gradient(ellipse 60% 40% at 100% 100%, color-mix(in oklab, var(--primary-glow) 6%, transparent), transparent)`,
+        }}
       />
+
+      <main className="relative flex-1">
+        <div className="min-h-full px-3 py-4 sm:px-4 sm:py-8 md:px-8 lg:px-12">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-2 flex justify-end">
+              <button
+                onClick={toggle}
+                aria-label="Toggle color theme"
+                className="rounded-full border border-border bg-card p-2 text-muted-foreground transition-colors hover:text-primary"
+              >
+                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </button>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4 text-center sm:mb-8"
+            >
+              <h1
+                className="mb-1 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:mb-2 sm:text-4xl md:text-5xl"
+                style={{ backgroundImage: "var(--gradient-primary)" }}
+              >
+                Spectra
+              </h1>
+              <p className="text-sm text-muted-foreground sm:text-base">
+                Discover the best AI tools for your workflow
+              </p>
+            </motion.div>
+
+            <SearchBar value={searchQuery} onChange={setSearchQuery} theme={theme} />
+
+            <FilterBar
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              selectedPricing={selectedPricing}
+              onPricingChange={setSelectedPricing}
+              selectedSort={selectedSort}
+              onSortChange={setSelectedSort}
+            />
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-4 flex items-center justify-between sm:mb-6"
+            >
+              <p className="text-xs text-muted-foreground sm:text-sm">
+                Showing <span className="font-medium text-foreground">{displayTools.length}</span>{" "}
+                tools
+                {selectedCategory !== "All" && (
+                  <>
+                    {" "}
+                    in <span className="text-primary">{selectedCategory}</span>
+                  </>
+                )}
+              </p>
+            </motion.div>
+
+            {isLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <p className="text-lg text-foreground">Couldn't load tools</p>
+                <p className="mt-2 max-w-xl text-sm break-words text-muted-foreground">{error}</p>
+              </div>
+            ) : (
+              <ToolGrid tools={displayTools} />
+            )}
+          </div>
+        </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }
