@@ -100,7 +100,10 @@
   --sidebar-ring: oklch(0.48 0.2 358);
 
   --shadow-card: 0 4px 24px oklch(0.18 0.02 340 / 0.08);
-  --shadow-glow: 0 0 60px oklch(0.48 0.2 358 / 0.18);
+  --shadow-glow: 0 0 70px oklch(0.48 0.2 358 / 0.22);
+  --shadow-elevated:
+    0 18px 45px -20px oklch(0.18 0.02 340 / 0.28), 0 0 0 1px oklch(0.18 0.02 340 / 0.04) inset,
+    0 0 34px -18px oklch(0.48 0.2 358 / 0.35);
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
 }
 
