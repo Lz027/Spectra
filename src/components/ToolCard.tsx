@@ -166,34 +166,51 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
           {tool.tagline || "No description available"}
         </p>
 
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0, height: 0, marginTop: 0 }}
-              animate={{ opacity: 1, height: "auto", marginTop: 8 }}
-              exit={{ opacity: 0, height: 0, marginTop: 0 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className="overflow-hidden"
-            >
-              <motion.button
-                onClick={handleVisit}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold backdrop-blur-sm transition-all duration-200 sm:rounded-xl sm:py-3 sm:text-sm"
-                style={{
-                  background: palette
-                    ? `linear-gradient(135deg, ${palette.accent}30, ${palette.secondary}40)`
-                    : "var(--gradient-primary)",
-                  color: palette?.textColor ?? "var(--primary-foreground)",
-                  border: `1px solid ${palette ? `${palette.accent}40` : "transparent"}`,
-                }}
+        {/* Always visible on touch/mobile */}
+        <button
+          onClick={handleVisit}
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold transition-all duration-200 active:scale-[0.98] sm:hidden"
+          style={{
+            background: "var(--gradient-primary)",
+            color: "var(--primary-foreground)",
+            boxShadow: "0 8px 24px -12px color-mix(in oklab, var(--primary) 70%, transparent)",
+          }}
+        >
+          <span>Visit Website</span>
+          <ExternalLink className="h-3 w-3" />
+        </button>
+
+        <div className="hidden sm:block">
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="overflow-hidden"
               >
-                <span>Visit Website</span>
-                <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <motion.button
+                  onClick={handleVisit}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold backdrop-blur-sm transition-all duration-200"
+                  style={{
+                    background: palette
+                      ? `linear-gradient(135deg, ${palette.accent}30, ${palette.secondary}40)`
+                      : "var(--gradient-primary)",
+                    color: palette?.textColor ?? "var(--primary-foreground)",
+                    border: `1px solid ${palette ? `${palette.accent}40` : "transparent"}`,
+                  }}
+                >
+                  <span>Visit Website</span>
+                  <ExternalLink className="h-4 w-4" />
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
       </motion.div>
     </motion.div>
   );
