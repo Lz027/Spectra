@@ -81,7 +81,7 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
       className="group relative"
     >
       <motion.div
-        className="relative flex h-full flex-col overflow-hidden rounded-2xl p-3 transition-all duration-300 sm:p-5"
+        className="relative flex h-full flex-col overflow-hidden rounded-2xl p-4 transition-all duration-300 sm:p-5"
         style={{
           background:
             isActive && palette
@@ -95,10 +95,11 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
               : "var(--border)",
           boxShadow:
             isActive && palette
-              ? `0 20px 60px ${palette.primary}60, 0 0 40px ${palette.secondary}30, inset 0 1px 0 rgba(255,255,255,0.15)`
-              : "var(--shadow-card)",
+              ? `0 24px 70px ${palette.primary}70, 0 0 50px ${palette.secondary}35, inset 0 1px 0 rgba(255,255,255,0.18)`
+              : "var(--shadow-elevated)",
         }}
       >
+
         <div className="mb-2 flex items-start gap-2 sm:mb-4 sm:gap-4">
           <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-background/20 ring-2 ring-transparent backdrop-blur-sm transition-all duration-300 group-hover:ring-white/20 sm:h-14 sm:w-14 sm:rounded-xl">
             {tool.logo_url ? (
