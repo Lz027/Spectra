@@ -27,15 +27,22 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
     img.crossOrigin = "Anonymous";
     img.onload = async () => {
       try {
-        const ColorThief = (await import("colorthief")).default;
+        const mod = (await import("colorthief")) as unknown as {
+          default?: new () => { getPalette: (img: HTMLImageElement, n: number) => number[][] };
+        };
+        const ColorThief = (mod.default ?? mod) as new () => {
+          getPalette: (img: HTMLImageElement, n: number) => number[][];
+        };
         const colorThief = new ColorThief();
-        const colors = colorThief.getPalette(img, 3);
-        if (colors && colors.length >= 3) {
-          const primary = `rgb(${colors[0][0]}, ${colors[0][1]}, ${colors[0][2]})`;
-          const secondary = `rgb(${colors[1][0]}, ${colors[1][1]}, ${colors[1][2]})`;
-          const accent = `rgb(${colors[2][0]}, ${colors[2][1]}, ${colors[2][2]})`;
-          const luminance =
-            (0.299 * colors[0][0] + 0.587 * colors[0][1] + 0.114 * colors[0][2]) / 255;
+        const colors = colorThief.getPalette(img, 3) as ([number, number, number] | undefined)[];
+        const c0 = colors?.[0];
+        const c1 = colors?.[1];
+        const c2 = colors?.[2];
+        if (c0 && c1 && c2) {
+          const primary = `rgb(${c0[0]}, ${c0[1]}, ${c0[2]})`;
+          const secondary = `rgb(${c1[0]}, ${c1[1]}, ${c1[2]})`;
+          const accent = `rgb(${c2[0]}, ${c2[1]}, ${c2[2]})`;
+          const luminance = (0.299 * c0[0] + 0.587 * c0[1] + 0.114 * c0[2]) / 255;
           const textColor = luminance > 0.5 ? "#1a1a1a" : "#fafafa";
           setPalette({ primary, secondary, accent, textColor });
         }
@@ -81,7 +88,7 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
       className="group relative"
     >
       <motion.div
-        className="relative flex h-full flex-col overflow-hidden rounded-2xl p-3 transition-all duration-300 sm:p-5"
+        className="relative flex h-full flex-col overflow-hidden rounded-2xl p-4 transition-all duration-300 sm:p-5"
         style={{
           background:
             isActive && palette
@@ -95,10 +102,11 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
               : "var(--border)",
           boxShadow:
             isActive && palette
-              ? `0 20px 60px ${palette.primary}60, 0 0 40px ${palette.secondary}30, inset 0 1px 0 rgba(255,255,255,0.15)`
-              : "var(--shadow-card)",
+              ? `0 24px 70px ${palette.primary}70, 0 0 50px ${palette.secondary}35, inset 0 1px 0 rgba(255,255,255,0.18)`
+              : "var(--shadow-elevated)",
         }}
       >
+
         <div className="mb-2 flex items-start gap-2 sm:mb-4 sm:gap-4">
           <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-background/20 ring-2 ring-transparent backdrop-blur-sm transition-all duration-300 group-hover:ring-white/20 sm:h-14 sm:w-14 sm:rounded-xl">
             {tool.logo_url ? (
@@ -165,34 +173,51 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
           {tool.tagline || "No description available"}
         </p>
 
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0, height: 0, marginTop: 0 }}
-              animate={{ opacity: 1, height: "auto", marginTop: 8 }}
-              exit={{ opacity: 0, height: 0, marginTop: 0 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className="overflow-hidden"
-            >
-              <motion.button
-                onClick={handleVisit}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-semibold backdrop-blur-sm transition-all duration-200 sm:rounded-xl sm:py-3 sm:text-sm"
-                style={{
-                  background: palette
-                    ? `linear-gradient(135deg, ${palette.accent}30, ${palette.secondary}40)`
-                    : "var(--gradient-primary)",
-                  color: palette?.textColor ?? "var(--primary-foreground)",
-                  border: `1px solid ${palette ? `${palette.accent}40` : "transparent"}`,
-                }}
+        {/* Always visible on touch/mobile */}
+        <button
+          onClick={handleVisit}
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold transition-all duration-200 active:scale-[0.98] sm:hidden"
+          style={{
+            background: "var(--gradient-primary)",
+            color: "var(--primary-foreground)",
+            boxShadow: "0 8px 24px -12px color-mix(in oklab, var(--primary) 70%, transparent)",
+          }}
+        >
+          <span>Visit Website</span>
+          <ExternalLink className="h-3 w-3" />
+        </button>
+
+        <div className="hidden sm:block">
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="overflow-hidden"
               >
-                <span>Visit Website</span>
-                <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <motion.button
+                  onClick={handleVisit}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold backdrop-blur-sm transition-all duration-200"
+                  style={{
+                    background: palette
+                      ? `linear-gradient(135deg, ${palette.accent}30, ${palette.secondary}40)`
+                      : "var(--gradient-primary)",
+                    color: palette?.textColor ?? "var(--primary-foreground)",
+                    border: `1px solid ${palette ? `${palette.accent}40` : "transparent"}`,
+                  }}
+                >
+                  <span>Visit Website</span>
+                  <ExternalLink className="h-4 w-4" />
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
       </motion.div>
     </motion.div>
   );

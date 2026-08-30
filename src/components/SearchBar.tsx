@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
-import logoLight from "@/assets/spectra-logo-books-light.png";
-import logoDark from "@/assets/spectra-logo-books-dark.png";
+import logoMark from "@/assets/spectra-logo-bricks.png";
 
 interface SearchBarProps {
   value: string;
@@ -10,7 +9,7 @@ interface SearchBarProps {
   theme: "light" | "dark";
 }
 
-const SearchBar = ({ value, onChange, theme }: SearchBarProps) => {
+const SearchBar = ({ value, onChange }: SearchBarProps) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -18,28 +17,32 @@ const SearchBar = ({ value, onChange, theme }: SearchBarProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="mx-auto mb-4 w-full max-w-3xl sm:mb-8"
+      className="mx-auto mb-5 w-full max-w-3xl sm:mb-8"
     >
       <div className={`relative transition-all duration-300 ${isFocused ? "scale-[1.01]" : ""}`}>
         <motion.div
           initial={false}
-          animate={{ opacity: isFocused ? 1 : 0 }}
-          className="pointer-events-none absolute -inset-1 rounded-xl sm:rounded-2xl"
+          animate={{ opacity: isFocused ? 1 : 0.35 }}
+          className="pointer-events-none absolute -inset-1 rounded-2xl"
           style={{ boxShadow: "var(--shadow-glow)" }}
         />
 
         <div
-          className={`relative flex items-center gap-2 rounded-xl border-2 bg-card px-3 py-2 transition-all duration-300 sm:gap-4 sm:rounded-2xl sm:px-4 sm:py-3 ${
+          className={`relative flex items-center gap-3 rounded-2xl border bg-card px-3 py-2.5 backdrop-blur-sm transition-all duration-300 sm:gap-4 sm:px-5 sm:py-3.5 ${
             isFocused ? "border-primary" : "border-border"
           }`}
+          style={{ boxShadow: "var(--shadow-elevated)" }}
         >
-          <div className="h-8 w-8 flex-shrink-0 overflow-hidden rounded-lg sm:h-12 sm:w-12 sm:rounded-xl">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-accent/60 sm:h-11 sm:w-11">
             <img
-              src={theme === "dark" ? logoDark : logoLight}
+              src={logoMark}
               alt="Spectra"
-              className="h-full w-full object-cover"
+              width={1024}
+              height={1024}
+              className="h-6 w-6 object-contain sm:h-7 sm:w-7"
             />
           </div>
+
 
           <input
             type="text"

@@ -96,7 +96,7 @@ function Index() {
               className="mb-4 text-center sm:mb-8"
             >
               <h1
-                className="mb-1 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:mb-2 sm:text-4xl md:text-5xl"
+                className="font-display mb-1 bg-clip-text text-4xl font-bold tracking-tight text-transparent drop-shadow-[0_0_28px_color-mix(in_oklab,var(--primary)_35%,transparent)] sm:mb-3 sm:text-5xl md:text-6xl"
                 style={{ backgroundImage: "var(--gradient-primary)" }}
               >
                 Spectra
@@ -104,6 +104,7 @@ function Index() {
               <p className="text-sm text-muted-foreground sm:text-base">
                 Discover the best AI tools for your workflow
               </p>
+
             </motion.div>
 
             <SearchBar value={searchQuery} onChange={setSearchQuery} theme={theme} />
