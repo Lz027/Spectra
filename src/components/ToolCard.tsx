@@ -27,7 +27,12 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
     img.crossOrigin = "Anonymous";
     img.onload = async () => {
       try {
-        const ColorThief = (await import("colorthief")).default;
+        const mod = (await import("colorthief")) as unknown as {
+          default?: new () => { getPalette: (img: HTMLImageElement, n: number) => number[][] };
+        };
+        const ColorThief = (mod.default ?? mod) as new () => {
+          getPalette: (img: HTMLImageElement, n: number) => number[][];
+        };
         const colorThief = new ColorThief();
         const colors = colorThief.getPalette(img, 3);
         if (colors && colors.length >= 3) {
