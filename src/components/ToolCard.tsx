@@ -34,13 +34,15 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
           getPalette: (img: HTMLImageElement, n: number) => number[][];
         };
         const colorThief = new ColorThief();
-        const colors = colorThief.getPalette(img, 3);
-        if (colors && colors.length >= 3) {
-          const primary = `rgb(${colors[0][0]}, ${colors[0][1]}, ${colors[0][2]})`;
-          const secondary = `rgb(${colors[1][0]}, ${colors[1][1]}, ${colors[1][2]})`;
-          const accent = `rgb(${colors[2][0]}, ${colors[2][1]}, ${colors[2][2]})`;
-          const luminance =
-            (0.299 * colors[0][0] + 0.587 * colors[0][1] + 0.114 * colors[0][2]) / 255;
+        const colors = colorThief.getPalette(img, 3) as ([number, number, number] | undefined)[];
+        const c0 = colors?.[0];
+        const c1 = colors?.[1];
+        const c2 = colors?.[2];
+        if (c0 && c1 && c2) {
+          const primary = `rgb(${c0[0]}, ${c0[1]}, ${c0[2]})`;
+          const secondary = `rgb(${c1[0]}, ${c1[1]}, ${c1[2]})`;
+          const accent = `rgb(${c2[0]}, ${c2[1]}, ${c2[2]})`;
+          const luminance = (0.299 * c0[0] + 0.587 * c0[1] + 0.114 * c0[2]) / 255;
           const textColor = luminance > 0.5 ? "#1a1a1a" : "#fafafa";
           setPalette({ primary, secondary, accent, textColor });
         }
