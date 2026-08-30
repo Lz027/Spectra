@@ -140,7 +140,10 @@
   --sidebar-ring: oklch(0.63 0.22 356);
 
   --shadow-card: 0 4px 24px oklch(0 0 0 / 0.5);
-  --shadow-glow: 0 0 60px oklch(0.63 0.22 356 / 0.25);
+  --shadow-glow: 0 0 80px oklch(0.63 0.22 356 / 0.32);
+  --shadow-elevated:
+    0 18px 50px -18px oklch(0 0 0 / 0.75), 0 0 0 1px oklch(1 0 0 / 0.04) inset,
+    0 0 40px -20px oklch(0.63 0.22 356 / 0.55);
 }
 
 @layer base {
@@ -151,11 +154,29 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family:
-      ui-sans-serif,
-      system-ui,
-      -apple-system,
-      "Segoe UI",
-      sans-serif;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+@utility text-glow {
+  text-shadow: 0 0 28px color-mix(in oklab, var(--primary) 45%, transparent);
+}
+
+@utility surface-glow {
+  box-shadow: var(--shadow-elevated);
+}
+
+@utility glow-ring {
+  &:hover {
+    box-shadow:
+      var(--shadow-card),
+      0 0 32px -8px color-mix(in oklab, var(--primary) 45%, transparent);
   }
 }
