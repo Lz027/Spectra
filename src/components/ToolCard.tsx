@@ -23,35 +23,79 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
 
   useEffect(() => {
     if (!tool.logo_url) return;
+    let cancelled = false;
     const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.onload = async () => {
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
       try {
-        const mod = (await import("colorthief")) as unknown as {
-          default?: new () => { getPalette: (img: HTMLImageElement, n: number) => number[][] };
-        };
-        const ColorThief = (mod.default ?? mod) as new () => {
-          getPalette: (img: HTMLImageElement, n: number) => number[][];
-        };
-        const colorThief = new ColorThief();
-        const colors = colorThief.getPalette(img, 3) as ([number, number, number] | undefined)[];
-        const c0 = colors?.[0];
-        const c1 = colors?.[1];
-        const c2 = colors?.[2];
-        if (c0 && c1 && c2) {
-          const primary = `rgb(${c0[0]}, ${c0[1]}, ${c0[2]})`;
-          const secondary = `rgb(${c1[0]}, ${c1[1]}, ${c1[2]})`;
-          const accent = `rgb(${c2[0]}, ${c2[1]}, ${c2[2]})`;
-          const luminance = (0.299 * c0[0] + 0.587 * c0[1] + 0.114 * c0[2]) / 255;
-          const textColor = luminance > 0.5 ? "#1a1a1a" : "#fafafa";
-          setPalette({ primary, secondary, accent, textColor });
+        const size = 48;
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0, size, size);
+        const { data } = ctx.getImageData(0, 0, size, size);
+
+        // Bucket pixels in a coarse RGB grid, ignoring transparent / near-white / near-black.
+        const buckets = new Map<number, { r: number; g: number; b: number; n: number }>();
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i] ?? 0;
+          const g = data[i + 1] ?? 0;
+          const b = data[i + 2] ?? 0;
+          const a = data[i + 3] ?? 0;
+          if (a < 160) continue;
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          if (max > 245 && min > 235) continue;
+          if (max < 18) continue;
+          const key = ((r >> 4) << 8) | ((g >> 4) << 4) | (b >> 4);
+          const bucket = buckets.get(key);
+          if (bucket) {
+            bucket.r += r;
+            bucket.g += g;
+            bucket.b += b;
+            bucket.n += 1;
+          } else {
+            buckets.set(key, { r, g, b, n: 1 });
+          }
         }
+
+        const ranked = [...buckets.values()]
+          .map((b) => ({
+            r: Math.round(b.r / b.n),
+            g: Math.round(b.g / b.n),
+            b: Math.round(b.b / b.n),
+            n: b.n,
+          }))
+          .sort((a, b) => {
+            const sat = (c: { r: number; g: number; b: number }) =>
+              Math.max(c.r, c.g, c.b) - Math.min(c.r, c.g, c.b);
+            return b.n * (1 + sat(b) / 128) - a.n * (1 + sat(a) / 128);
+          });
+
+        if (!ranked.length || cancelled) return;
+        const c0 = ranked[0]!;
+        const c1 = ranked[1] ?? c0;
+        const c2 = ranked[2] ?? c1;
+        const rgb = (c: { r: number; g: number; b: number }) => `rgb(${c.r}, ${c.g}, ${c.b})`;
+        const luminance = (0.299 * c0.r + 0.587 * c0.g + 0.114 * c0.b) / 255;
+        setPalette({
+          primary: rgb(c0),
+          secondary: rgb(c1),
+          accent: rgb(c2),
+          textColor: luminance > 0.55 ? "#141414" : "#fafafa",
+        });
       } catch {
         setPalette(null);
       }
     };
     img.src = tool.logo_url;
+    return () => {
+      cancelled = true;
+    };
   }, [tool.logo_url]);
+
 
   const handleVisit = (e: React.MouseEvent) => {
     e.preventDefault();
