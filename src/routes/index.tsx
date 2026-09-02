@@ -78,13 +78,13 @@ function Index() {
       />
 
       <main className="relative flex-1">
-        <div className="min-h-full px-3 py-4 sm:px-4 sm:py-8 md:px-8 lg:px-12">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-2 flex justify-end">
+        <div className="min-h-full px-3 py-5 sm:px-6 sm:py-10 md:px-10 lg:px-14">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-2 flex justify-end sm:mb-4">
               <button
                 onClick={toggle}
                 aria-label="Toggle color theme"
-                className="rounded-full border border-border bg-card p-2 text-muted-foreground transition-colors hover:text-primary"
+                className="rounded-full border border-border bg-card p-2 text-muted-foreground transition-all duration-300 hover:border-primary hover:text-primary hover:shadow-[0_0_20px_color-mix(in_oklab,var(--primary)_30%,transparent)]"
               >
                 {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </button>
@@ -93,18 +93,18 @@ function Index() {
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-4 text-center sm:mb-8"
+              className="mb-5 text-center sm:mb-10"
             >
               <h1
-                className="font-display mb-1 bg-clip-text text-4xl font-bold tracking-tight text-transparent drop-shadow-[0_0_28px_color-mix(in_oklab,var(--primary)_35%,transparent)] sm:mb-3 sm:text-5xl md:text-6xl"
+                className="font-display mb-1 bg-clip-text text-5xl font-bold tracking-tight text-transparent drop-shadow-[0_0_32px_color-mix(in_oklab,var(--primary)_40%,transparent)] sm:mb-3 sm:text-6xl md:text-7xl"
                 style={{ backgroundImage: "var(--gradient-primary)" }}
               >
                 Spectra
               </h1>
+              <div className="mx-auto mb-2 h-px w-16 sm:mb-3 sm:w-24" style={{ background: "var(--gradient-primary)" }} />
               <p className="text-sm text-muted-foreground sm:text-base">
                 Discover the best AI tools for your workflow
               </p>
-
             </motion.div>
 
             <SearchBar value={searchQuery} onChange={setSearchQuery} theme={theme} />
