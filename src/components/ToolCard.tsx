@@ -126,13 +126,14 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: cardOpacity, y: isHovered ? -8 : 0, scale: cardScale }}
+      whileTap={{ scale: 0.985 }}
       transition={{ duration: 0.35, delay: index * 0.02, ease: "easeOut" }}
       onMouseEnter={() => onHover(tool.id)}
       onMouseLeave={() => onHover(null)}
       className="group relative"
     >
       <motion.div
-        className="relative flex h-full flex-col overflow-hidden rounded-2xl p-4 transition-all duration-300 sm:p-5"
+        className="relative flex h-full flex-col overflow-hidden rounded-3xl p-4 transition-all duration-300 sm:p-5"
         style={{
           background:
             isActive && palette
@@ -150,15 +151,26 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
               : "var(--shadow-elevated)",
         }}
       >
+        {/* Premium top sheen */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-24 opacity-70"
+          style={{
+            background:
+              "linear-gradient(180deg, color-mix(in oklab, white 22%, transparent), transparent)",
+          }}
+        />
 
-        <div className="mb-2 flex items-start gap-2 sm:mb-4 sm:gap-4">
-          <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-background/20 ring-2 ring-transparent backdrop-blur-sm transition-all duration-300 group-hover:ring-white/20 sm:h-14 sm:w-14 sm:rounded-xl">
+        <div className="relative mb-3 flex items-start gap-3 sm:mb-4 sm:gap-4">
+          <div
+            className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-2xl bg-background/25 p-[3px] ring-1 ring-white/10 backdrop-blur-sm transition-all duration-300 group-hover:ring-white/25 sm:h-14 sm:w-14"
+            style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.25)" }}
+          >
             {tool.logo_url ? (
               <img
                 src={tool.logo_url}
                 alt={`${tool.name} logo`}
                 loading="lazy"
-                className="h-full w-full object-cover"
+                className="h-full w-full rounded-xl object-cover"
                 crossOrigin="anonymous"
               />
             ) : (
@@ -175,31 +187,37 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
 
           <div className="min-w-0 flex-1">
             <h3
-              className="flex items-center gap-1 text-sm leading-tight font-bold sm:gap-2 sm:text-lg"
+              className="font-display flex items-center gap-1.5 text-base leading-tight font-bold tracking-tight sm:gap-2 sm:text-lg"
               style={{ color: isActive && palette ? palette.textColor : "var(--foreground)" }}
             >
               <span className="truncate">{tool.name}</span>
               {tool.featured && (
                 <Star
-                  className="h-3 w-3 flex-shrink-0 fill-current sm:h-4 sm:w-4"
+                  className="h-3.5 w-3.5 flex-shrink-0 fill-current sm:h-4 sm:w-4"
                   style={{ color: isActive && palette ? palette.accent : "var(--primary)" }}
                 />
               )}
             </h3>
-            <div className="mt-0.5 flex flex-wrap items-center gap-1 sm:mt-1 sm:gap-2">
+            <div className="mt-1.5 flex flex-wrap items-center gap-1.5 sm:gap-2">
               <span
-                className="max-w-[100px] truncate text-[10px] font-medium sm:max-w-none sm:text-xs"
+                className="max-w-[130px] truncate rounded-full px-2 py-0.5 text-[10px] font-medium sm:max-w-none sm:text-[11px]"
                 style={{
                   color: isActive && palette ? palette.textColor : "var(--muted-foreground)",
-                  opacity: isActive ? 0.8 : 0.75,
+                  background: isActive
+                    ? "color-mix(in oklab, white 18%, transparent)"
+                    : "var(--secondary)",
                 }}
               >
                 {tool.category}
               </span>
-              <span className="text-[10px] opacity-40 sm:text-xs">•</span>
               <span
-                className="text-[10px] font-semibold sm:text-xs"
-                style={getPricingStyles(tool.pricing, isActive)}
+                className="rounded-full px-2 py-0.5 text-[10px] font-semibold sm:text-[11px]"
+                style={{
+                  ...getPricingStyles(tool.pricing, isActive),
+                  background: isActive
+                    ? "color-mix(in oklab, white 18%, transparent)"
+                    : "color-mix(in oklab, var(--primary) 8%, transparent)",
+                }}
               >
                 {tool.pricing}
               </span>
@@ -208,28 +226,31 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
         </div>
 
         <p
-          className="mb-2 line-clamp-2 flex-1 text-xs leading-relaxed sm:mb-4 sm:line-clamp-3 sm:text-sm"
+          className="relative mb-4 line-clamp-2 flex-1 text-[13px] leading-relaxed sm:line-clamp-3 sm:text-sm"
           style={{
             color: isActive && palette ? palette.textColor : "var(--secondary-foreground)",
-            opacity: isActive ? 0.9 : 1,
+            opacity: isActive ? 0.9 : 0.85,
           }}
         >
           {tool.tagline || "No description available"}
         </p>
 
         {/* Always visible on touch/mobile */}
-        <button
+        <motion.button
           onClick={handleVisit}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold transition-all duration-200 active:scale-[0.98] sm:hidden"
+          whileTap={{ scale: 0.96 }}
+          className="relative mt-1 flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-[13px] font-semibold tracking-wide sm:hidden"
           style={{
             background: "var(--gradient-primary)",
             color: "var(--primary-foreground)",
-            boxShadow: "0 8px 24px -12px color-mix(in oklab, var(--primary) 70%, transparent)",
+            boxShadow:
+              "0 12px 30px -14px color-mix(in oklab, var(--primary) 85%, transparent), inset 0 1px 0 rgba(255,255,255,0.25)",
           }}
         >
           <span>Visit Website</span>
-          <ExternalLink className="h-3 w-3" />
-        </button>
+          <ExternalLink className="h-3.5 w-3.5" />
+        </motion.button>
+
 
         <div className="hidden sm:block">
           <AnimatePresence>
