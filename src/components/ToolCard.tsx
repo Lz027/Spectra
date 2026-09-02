@@ -299,42 +299,26 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
           {tool.tagline || "No description available"}
         </p>
 
-        {/* Visit button — refined, always visible */}
+        {/* Visit link — hypertext style, always visible */}
         <motion.button
           onClick={handleVisit}
-          whileTap={{ scale: 0.96 }}
-          className="group/btn relative mt-auto flex w-full items-center justify-between overflow-hidden rounded-2xl border px-4 py-3 text-[13px] font-semibold tracking-wide transition-all duration-200 sm:py-3.5 sm:text-sm"
+          whileTap={{ scale: 0.97 }}
+          className="group/link relative mt-auto inline-flex w-fit items-center gap-1 pt-1 text-[13px] font-semibold tracking-wide transition-colors duration-200 sm:text-sm"
           style={{
-            borderColor: isActive && palette
-              ? `color-mix(in srgb, ${palette.textColor} 30%, transparent)`
-              : "var(--border)",
-            color: isActive && palette ? palette.textColor : "var(--foreground)",
-            background: isActive && palette
-              ? `linear-gradient(135deg, ${palette.accent}25, ${palette.secondary}20)`
-              : "color-mix(in oklab, var(--primary) 4%, transparent)",
+            color: isActive && palette ? palette.textColor : "var(--primary)",
           }}
         >
-          <span className="relative z-10">Visit Website</span>
-          <span
-            className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full sm:h-8 sm:w-8"
-            style={{
-              background: isActive && palette
-                ? `color-mix(in srgb, ${palette.textColor} 16%, transparent)`
-                : "var(--secondary)",
-            }}
-          >
-            <ArrowUpRight
-              className="h-3.5 w-3.5 transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 sm:h-4 sm:w-4"
+          <span className="relative">
+            Visit Website
+            <span
+              className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-100 transition-transform duration-300 group-hover/link:scale-x-75"
+              style={{
+                background: isActive && palette ? palette.textColor : "var(--primary)",
+                opacity: 0.55,
+              }}
             />
           </span>
-          <motion.div
-            className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100"
-            style={{
-              background: isActive && palette
-                ? `linear-gradient(135deg, ${palette.accent}35, ${palette.secondary}25)`
-                : "var(--gradient-primary)",
-            }}
-          />
+          <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 sm:h-4 sm:w-4" />
         </motion.button>
       </motion.div>
     </motion.div>
