@@ -33,15 +33,13 @@ const SearchBar = ({ value, onChange }: SearchBarProps) => {
           }`}
           style={{ boxShadow: "var(--shadow-elevated)" }}
         >
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-accent/60 sm:h-11 sm:w-11">
-            <img
-              src={logoMark}
-              alt="Spectra"
-              width={1024}
-              height={1024}
-              className="h-6 w-6 object-contain sm:h-7 sm:w-7"
-            />
-          </div>
+          <img
+            src={logoMark}
+            alt="Spectra"
+            width={1024}
+            height={1024}
+            className="h-10 w-10 flex-shrink-0 object-contain drop-shadow-[0_0_14px_color-mix(in_oklab,var(--primary)_40%,transparent)] sm:h-12 sm:w-12"
+          />
 
 
           <input
