@@ -16,6 +16,9 @@ interface ToolCardProps {
   isAnyHovered: boolean;
   isHovered: boolean;
   onHover: (id: string | null) => void;
+  onSelect: (tool: Tool) => void;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) => void;
 }
 
 const rgbToHsl = (r: number, g: number, b: number) => {
