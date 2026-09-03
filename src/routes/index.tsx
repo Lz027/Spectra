@@ -43,7 +43,11 @@ function Index() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPricing, setSelectedPricing] = useState("All");
   const [selectedSort, setSelectedSort] = useState("Popular");
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [activeTool, setActiveTool] = useState<Tool | null>(null);
   const { theme, toggle } = useTheme();
+  const { categories } = useCategories();
+  const { toggleFavorite, isFavorite, count: favoritesCount } = useFavorites();
 
   const { tools, isLoading, error } = useTools();
 
@@ -56,7 +60,8 @@ function Index() {
         tool.category.toLowerCase().includes(q);
       const matchesCategory = selectedCategory === "All" || tool.category === selectedCategory;
       const matchesPricing = selectedPricing === "All" || tool.pricing === selectedPricing;
-      return matchesSearch && matchesCategory && matchesPricing;
+      const matchesFavorite = !favoritesOnly || isFavorite(tool.id);
+      return matchesSearch && matchesCategory && matchesPricing && matchesFavorite;
     });
 
     const sorted = [...filtered];
