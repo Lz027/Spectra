@@ -5,9 +5,16 @@ import { Moon, Sun } from "lucide-react";
 import ToolGrid from "@/components/ToolGrid";
 import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
+import CategoryChips from "@/components/CategoryChips";
+import ToolCardSkeleton from "@/components/ToolCardSkeleton";
+import ToolDetailDialog from "@/components/ToolDetailDialog";
+import BackToTop from "@/components/BackToTop";
 import Footer from "@/components/Footer";
 import { useTools } from "@/hooks/useTools";
+import { useCategories } from "@/hooks/useCategories";
+import { useFavorites } from "@/hooks/useFavorites";
 import { useTheme } from "@/hooks/useTheme";
+import type { Tool } from "@/types/tool";
 
 export const Route = createFileRoute("/")({
   head: () => ({
