@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, X } from "lucide-react";
 import logoMark from "@/assets/spectra-logo-spark.png";
 
 interface SearchBarProps {
@@ -11,6 +11,24 @@ interface SearchBarProps {
 
 const SearchBar = ({ value, onChange }: SearchBarProps) => {
   const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const typing =
+        target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
+      if ((e.key === "/" && !typing) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k")) {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+      if (e.key === "Escape" && typing && target === inputRef.current) {
+        inputRef.current?.blur();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <motion.div
@@ -41,8 +59,8 @@ const SearchBar = ({ value, onChange }: SearchBarProps) => {
             className="h-10 w-10 flex-shrink-0 object-contain drop-shadow-[0_0_14px_color-mix(in_oklab,var(--primary)_40%,transparent)] sm:h-12 sm:w-12"
           />
 
-
           <input
+            ref={inputRef}
             type="text"
             placeholder="Search AI tools…"
             aria-label="Search AI tools"
@@ -52,6 +70,29 @@ const SearchBar = ({ value, onChange }: SearchBarProps) => {
             onBlur={() => setIsFocused(false)}
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none sm:text-lg"
           />
+
+          <AnimatePresence initial={false}>
+            {value && (
+              <motion.button
+                key="clear"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                onClick={() => {
+                  onChange("");
+                  inputRef.current?.focus();
+                }}
+                aria-label="Clear search"
+                className="rounded-full p-1 text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+
+          <kbd className="hidden rounded-md border border-border px-1.5 py-0.5 font-sans text-[10px] font-medium text-muted-foreground md:block">
+            /
+          </kbd>
 
           <Search className="h-4 w-4 flex-shrink-0 text-primary sm:h-5 sm:w-5" />
         </div>
