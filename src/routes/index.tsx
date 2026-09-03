@@ -121,6 +121,15 @@ function Index() {
 
             <SearchBar value={searchQuery} onChange={setSearchQuery} theme={theme} />
 
+            <CategoryChips
+              categories={categories}
+              selected={selectedCategory}
+              onSelect={setSelectedCategory}
+              favoritesOnly={favoritesOnly}
+              onToggleFavorites={() => setFavoritesOnly((v) => !v)}
+              favoritesCount={favoritesCount}
+            />
+
             <FilterBar
               selectedCategory={selectedCategory}
               onCategoryChange={setSelectedCategory}
@@ -148,8 +157,10 @@ function Index() {
             </motion.div>
 
             {isLoading ? (
-              <div className="flex items-center justify-center py-20">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <ToolCardSkeleton key={i} index={i} />
+                ))}
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -157,12 +168,30 @@ function Index() {
                 <p className="mt-2 max-w-xl text-sm break-words text-muted-foreground">{error}</p>
               </div>
             ) : (
-              <ToolGrid tools={displayTools} />
+              <ToolGrid
+                tools={displayTools}
+                onSelect={setActiveTool}
+                isFavorite={isFavorite}
+                onToggleFavorite={toggleFavorite}
+                onReset={() => {
+                  setSearchQuery("");
+                  setSelectedCategory("All");
+                  setSelectedPricing("All");
+                  setFavoritesOnly(false);
+                }}
+              />
             )}
           </div>
         </div>
       </main>
 
+      <ToolDetailDialog
+        tool={activeTool}
+        onClose={() => setActiveTool(null)}
+        isFavorite={activeTool ? isFavorite(activeTool.id) : false}
+        onToggleFavorite={toggleFavorite}
+      />
+      <BackToTop />
       <Footer />
     </div>
   );
