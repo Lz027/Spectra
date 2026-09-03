@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
-import logoMark from "@/assets/spectra-logo-cat-body.png";
+import logoMark from "@/assets/spectra-logo-spark.png";
 
 interface SearchBarProps {
   value: string;
