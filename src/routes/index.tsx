@@ -77,7 +77,7 @@ function Index() {
         break;
     }
     return sorted;
-  }, [searchQuery, selectedCategory, selectedPricing, selectedSort, tools]);
+  }, [searchQuery, selectedCategory, selectedPricing, selectedSort, tools, favoritesOnly, isFavorite]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
