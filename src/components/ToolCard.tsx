@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Star, Sparkles, ArrowUpRight } from "lucide-react";
+import { Star, Sparkles, ArrowUpRight, Heart } from "lucide-react";
 import type { Tool } from "@/types/tool";
 
 interface ColorPalette {
@@ -59,7 +59,16 @@ const hslToRgb = (h: number, s: number, l: number) => {
 
 const rgbToCss = ({ r, g, b }: { r: number; g: number; b: number }) => `rgb(${r}, ${g}, ${b})`;
 
-const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardProps) => {
+const ToolCard = ({
+  tool,
+  index,
+  isAnyHovered,
+  isHovered,
+  onHover,
+  onSelect,
+  isFavorite,
+  onToggleFavorite,
+}: ToolCardProps) => {
   const [palette, setPalette] = useState<ColorPalette | null>(null);
 
   useEffect(() => {
@@ -166,6 +175,7 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
 
   const handleVisit = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     window.open(tool.website_url, "_blank", "noopener,noreferrer");
   };
 
@@ -197,7 +207,16 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
       transition={{ duration: 0.35, delay: index * 0.02, ease: "easeOut" }}
       onMouseEnter={() => onHover(tool.id)}
       onMouseLeave={() => onHover(null)}
-      className="group relative"
+      onClick={() => onSelect(tool)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect(tool);
+        }
+      }}
+      className="group relative cursor-pointer outline-none"
     >
       <motion.div
         className="relative flex h-full flex-col overflow-hidden rounded-3xl p-4 transition-all duration-300 sm:p-5"
