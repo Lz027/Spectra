@@ -227,7 +227,27 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
           }}
         />
 
-        <div className="relative mb-3 flex items-start gap-3 sm:mb-4 sm:gap-4">
+        <motion.button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite(tool.id);
+          }}
+          whileTap={{ scale: 0.85 }}
+          aria-pressed={isFavorite}
+          aria-label={isFavorite ? `Remove ${tool.name} from saved` : `Save ${tool.name}`}
+          className={`absolute top-3 right-3 z-10 rounded-full p-1.5 transition-all duration-200 sm:top-4 sm:right-4 ${
+            isFavorite ? "opacity-100" : "opacity-0 group-hover:opacity-100 focus-visible:opacity-100 max-sm:opacity-70"
+          }`}
+          style={{
+            background: "color-mix(in oklab, var(--background) 45%, transparent)",
+            color: isActive && palette ? palette.textColor : "var(--primary)",
+          }}
+        >
+          <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+        </motion.button>
+
+        <div className="relative mb-3 flex items-start gap-3 pr-7 sm:mb-4 sm:gap-4">
+
           <div
             className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-2xl bg-background/25 p-[3px] ring-1 ring-white/10 backdrop-blur-sm transition-all duration-300 group-hover:ring-white/25 sm:h-14 sm:w-14"
             style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.25)" }}
