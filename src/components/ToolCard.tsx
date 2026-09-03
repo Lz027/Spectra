@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Star, Sparkles, ArrowUpRight } from "lucide-react";
+import { Star, Sparkles, ArrowUpRight, Heart } from "lucide-react";
 import type { Tool } from "@/types/tool";
 
 interface ColorPalette {
@@ -16,6 +16,9 @@ interface ToolCardProps {
   isAnyHovered: boolean;
   isHovered: boolean;
   onHover: (id: string | null) => void;
+  onSelect: (tool: Tool) => void;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) => void;
 }
 
 const rgbToHsl = (r: number, g: number, b: number) => {
@@ -56,7 +59,16 @@ const hslToRgb = (h: number, s: number, l: number) => {
 
 const rgbToCss = ({ r, g, b }: { r: number; g: number; b: number }) => `rgb(${r}, ${g}, ${b})`;
 
-const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardProps) => {
+const ToolCard = ({
+  tool,
+  index,
+  isAnyHovered,
+  isHovered,
+  onHover,
+  onSelect,
+  isFavorite,
+  onToggleFavorite,
+}: ToolCardProps) => {
   const [palette, setPalette] = useState<ColorPalette | null>(null);
 
   useEffect(() => {
@@ -163,6 +175,7 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
 
   const handleVisit = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     window.open(tool.website_url, "_blank", "noopener,noreferrer");
   };
 
@@ -190,11 +203,21 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: cardOpacity, y: isHovered ? -8 : 0, scale: cardScale }}
+      exit={{ opacity: 0, scale: 0.96 }}
       whileTap={{ scale: 0.985 }}
       transition={{ duration: 0.35, delay: index * 0.02, ease: "easeOut" }}
       onMouseEnter={() => onHover(tool.id)}
       onMouseLeave={() => onHover(null)}
-      className="group relative"
+      onClick={() => onSelect(tool)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect(tool);
+        }
+      }}
+      className="group relative cursor-pointer outline-none"
     >
       <motion.div
         className="relative flex h-full flex-col overflow-hidden rounded-3xl p-4 transition-all duration-300 sm:p-5"
@@ -224,7 +247,27 @@ const ToolCard = ({ tool, index, isAnyHovered, isHovered, onHover }: ToolCardPro
           }}
         />
 
-        <div className="relative mb-3 flex items-start gap-3 sm:mb-4 sm:gap-4">
+        <motion.button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite(tool.id);
+          }}
+          whileTap={{ scale: 0.85 }}
+          aria-pressed={isFavorite}
+          aria-label={isFavorite ? `Remove ${tool.name} from saved` : `Save ${tool.name}`}
+          className={`absolute top-3 right-3 z-10 rounded-full p-1.5 transition-all duration-200 sm:top-4 sm:right-4 ${
+            isFavorite ? "opacity-100" : "opacity-0 group-hover:opacity-100 focus-visible:opacity-100 max-sm:opacity-70"
+          }`}
+          style={{
+            background: "color-mix(in oklab, var(--background) 45%, transparent)",
+            color: isActive && palette ? palette.textColor : "var(--primary)",
+          }}
+        >
+          <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+        </motion.button>
+
+        <div className="relative mb-3 flex items-start gap-3 pr-7 sm:mb-4 sm:gap-4">
+
           <div
             className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-2xl bg-background/25 p-[3px] ring-1 ring-white/10 backdrop-blur-sm transition-all duration-300 group-hover:ring-white/25 sm:h-14 sm:w-14"
             style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.25)" }}

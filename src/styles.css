@@ -183,3 +183,25 @@
       0 0 32px -8px color-mix(in oklab, var(--primary) 45%, transparent);
   }
 }
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes shimmer-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.skeleton-shimmer {
+  animation: shimmer-pulse 1.6s ease-in-out infinite;
+}
