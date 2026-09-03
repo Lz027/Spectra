@@ -68,7 +68,7 @@
 
   --primary: oklch(0.41 0.19 358);
   --primary-foreground: oklch(0.99 0.005 340);
-  --primary-glow: oklch(0.53 0.20 356);
+  --primary-glow: oklch(0.53 0.2 356);
 
   --secondary: oklch(0.968 0.008 340);
   --secondary-foreground: oklch(0.42 0.02 340);
@@ -85,7 +85,7 @@
   --ring: oklch(0.41 0.19 358);
 
   --chart-1: oklch(0.41 0.19 358);
-  --chart-2: oklch(0.53 0.20 356);
+  --chart-2: oklch(0.53 0.2 356);
   --chart-3: oklch(0.72 0.15 350);
   --chart-4: oklch(0.4 0.15 356);
   --chart-5: oklch(0.82 0.09 348);

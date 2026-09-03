@@ -77,7 +77,15 @@ function Index() {
         break;
     }
     return sorted;
-  }, [searchQuery, selectedCategory, selectedPricing, selectedSort, tools, favoritesOnly, isFavorite]);
+  }, [
+    searchQuery,
+    selectedCategory,
+    selectedPricing,
+    selectedSort,
+    tools,
+    favoritesOnly,
+    isFavorite,
+  ]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -113,7 +121,10 @@ function Index() {
               >
                 Spectra
               </h1>
-              <div className="mx-auto mb-2 h-px w-16 sm:mb-3 sm:w-24" style={{ background: "var(--gradient-primary)" }} />
+              <div
+                className="mx-auto mb-2 h-px w-16 sm:mb-3 sm:w-24"
+                style={{ background: "var(--gradient-primary)" }}
+              />
               <p className="text-sm text-muted-foreground sm:text-base">
                 Discover the best AI tools for your workflow
               </p>

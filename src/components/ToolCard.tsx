@@ -22,25 +22,37 @@ interface ToolCardProps {
 }
 
 const rgbToHsl = (r: number, g: number, b: number) => {
-  r /= 255; g /= 255; b /= 255;
+  r /= 255;
+  g /= 255;
+  b /= 255;
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h = 0, s = 0, l = (max + min) / 2;
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
 
   if (max !== min) {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
-      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-      case g: h = ((b - r) / d + 2) / 6; break;
-      case b: h = ((r - g) / d + 4) / 6; break;
+      case r:
+        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        break;
+      case g:
+        h = ((b - r) / d + 2) / 6;
+        break;
+      case b:
+        h = ((r - g) / d + 4) / 6;
+        break;
     }
   }
   return { h, s, l };
 };
 
 const hslToRgb = (h: number, s: number, l: number) => {
-  let r = l, g = l, b = l;
+  let r = l,
+    g = l,
+    b = l;
   if (s !== 0) {
     const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
     const p = 2 * l - q;
@@ -52,7 +64,9 @@ const hslToRgb = (h: number, s: number, l: number) => {
       if (k < 2 / 3) return p + (q - p) * (2 / 3 - k) * 6;
       return p;
     };
-    r = hue(1 / 3); g = hue(0); b = hue(-1 / 3);
+    r = hue(1 / 3);
+    g = hue(0);
+    b = hue(-1 / 3);
   }
   return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
 };
@@ -88,7 +102,10 @@ const ToolCard = ({
         const { data } = ctx.getImageData(0, 0, size, size);
 
         const hueBuckets = new Map<number, { r: number; g: number; b: number; weight: number }>();
-        const fallbackBuckets = new Map<number, { r: number; g: number; b: number; weight: number }>();
+        const fallbackBuckets = new Map<
+          number,
+          { r: number; g: number; b: number; weight: number }
+        >();
 
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i] ?? 0;
@@ -108,7 +125,10 @@ const ToolCard = ({
             const key = ((r >> 5) << 6) | ((g >> 5) << 3) | (b >> 5);
             const bucket = fallbackBuckets.get(key);
             if (bucket) {
-              bucket.r += r * weight; bucket.g += g * weight; bucket.b += b * weight; bucket.weight += weight;
+              bucket.r += r * weight;
+              bucket.g += g * weight;
+              bucket.b += b * weight;
+              bucket.weight += weight;
             } else {
               fallbackBuckets.set(key, { r: r * weight, g: g * weight, b: b * weight, weight });
             }
@@ -119,13 +139,18 @@ const ToolCard = ({
           const key = Math.round(h * 24);
           const bucket = hueBuckets.get(key);
           if (bucket) {
-            bucket.r += r * weight; bucket.g += g * weight; bucket.b += b * weight; bucket.weight += weight;
+            bucket.r += r * weight;
+            bucket.g += g * weight;
+            bucket.b += b * weight;
+            bucket.weight += weight;
           } else {
             hueBuckets.set(key, { r: r * weight, g: g * weight, b: b * weight, weight });
           }
         }
 
-        const normalize = (buckets: Map<number, { r: number; g: number; b: number; weight: number }>) =>
+        const normalize = (
+          buckets: Map<number, { r: number; g: number; b: number; weight: number }>,
+        ) =>
           [...buckets.values()]
             .map((b) => ({
               r: Math.round(b.r / b.weight),
@@ -143,10 +168,17 @@ const ToolCard = ({
         const c1 = ranked[1] ?? c0;
         const c2 = ranked[2] ?? c1;
 
-        const enhance = (color: { r: number; g: number; b: number }, boostSat: number, targetL: number) => {
-          let { h, s, l } = rgbToHsl(color.r, color.g, color.b);
-          s = Math.min(1, s * (1 + boostSat) + 0.12);
-          l = l > targetL ? Math.max(targetL, l * 0.92) : Math.min(targetL, l * 1.08);
+        const enhance = (
+          color: { r: number; g: number; b: number },
+          boostSat: number,
+          targetL: number,
+        ) => {
+          const { h, s: initialS, l: initialL } = rgbToHsl(color.r, color.g, color.b);
+          const s = Math.min(1, initialS * (1 + boostSat) + 0.12);
+          const l =
+            initialL > targetL
+              ? Math.max(targetL, initialL * 0.92)
+              : Math.min(targetL, initialL * 1.08);
           return hslToRgb(h, s, l);
         };
 
@@ -256,7 +288,9 @@ const ToolCard = ({
           aria-pressed={isFavorite}
           aria-label={isFavorite ? `Remove ${tool.name} from saved` : `Save ${tool.name}`}
           className={`absolute top-3 right-3 z-10 rounded-full p-1.5 transition-all duration-200 sm:top-4 sm:right-4 ${
-            isFavorite ? "opacity-100" : "opacity-0 group-hover:opacity-100 focus-visible:opacity-100 max-sm:opacity-70"
+            isFavorite
+              ? "opacity-100"
+              : "opacity-0 group-hover:opacity-100 focus-visible:opacity-100 max-sm:opacity-70"
           }`}
           style={{
             background: "color-mix(in oklab, var(--background) 45%, transparent)",
@@ -267,7 +301,6 @@ const ToolCard = ({
         </motion.button>
 
         <div className="relative mb-3 flex items-start gap-3 pr-7 sm:mb-4 sm:gap-4">
-
           <div
             className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-2xl bg-background/25 p-[3px] ring-1 ring-white/10 backdrop-blur-sm transition-all duration-300 group-hover:ring-white/25 sm:h-14 sm:w-14"
             style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.25)" }}

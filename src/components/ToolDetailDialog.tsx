@@ -10,7 +10,12 @@ interface ToolDetailDialogProps {
   onToggleFavorite: (id: string) => void;
 }
 
-const ToolDetailDialog = ({ tool, onClose, isFavorite, onToggleFavorite }: ToolDetailDialogProps) => {
+const ToolDetailDialog = ({
+  tool,
+  onClose,
+  isFavorite,
+  onToggleFavorite,
+}: ToolDetailDialogProps) => {
   useEffect(() => {
     if (!tool) return;
     const onKey = (e: KeyboardEvent) => {
@@ -92,7 +97,10 @@ const ToolDetailDialog = ({ tool, onClose, isFavorite, onToggleFavorite }: ToolD
                   <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
                     {tool.category}
                   </span>
-                  <span className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-primary" style={{ background: "color-mix(in oklab, var(--primary) 10%, transparent)" }}>
+                  <span
+                    className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-primary"
+                    style={{ background: "color-mix(in oklab, var(--primary) 10%, transparent)" }}
+                  >
                     {tool.pricing}
                   </span>
                 </div>

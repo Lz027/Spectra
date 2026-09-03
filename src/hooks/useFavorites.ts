@@ -11,7 +11,8 @@ export const useFavorites = () => {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed: unknown = JSON.parse(raw);
-        if (Array.isArray(parsed)) setFavorites(parsed.filter((v): v is string => typeof v === "string"));
+        if (Array.isArray(parsed))
+          setFavorites(parsed.filter((v): v is string => typeof v === "string"));
       }
     } catch {
       /* ignore */

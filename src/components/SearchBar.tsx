@@ -17,7 +17,8 @@ const SearchBar = ({ value, onChange }: SearchBarProps) => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
       const typing =
-        target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
+        target &&
+        (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
       if ((e.key === "/" && !typing) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k")) {
         e.preventDefault();
         inputRef.current?.focus();

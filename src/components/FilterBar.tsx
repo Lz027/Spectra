@@ -96,8 +96,7 @@ const FilterBar = ({
   const { categories, isLoading: categoriesLoading } = useCategories();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  const toggleDropdown = (name: string) =>
-    setOpenDropdown(openDropdown === name ? null : name);
+  const toggleDropdown = (name: string) => setOpenDropdown(openDropdown === name ? null : name);
 
   return (
     <motion.div

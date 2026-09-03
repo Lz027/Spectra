@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabaseClient } from "@/lib/supabaseClient";
+import { supabaseClient } from "@/lib/supabase-client";
 import type { Tool } from "@/types/tool";
 
 interface UseToolsReturn {
@@ -23,14 +23,13 @@ const normalizeToolRow = (row: Row, index: number): Tool => {
 
   return {
     id: pickString(["id", "uuid", "tool_id", "slug"]) ?? `tool-${index}`,
-    name:
-      pickString(["name", "tool_name", "title", "app_name", "product_name"]) ??
-      "Unnamed Tool",
+    name: pickString(["name", "tool_name", "title", "app_name", "product_name"]) ?? "Unnamed Tool",
     tagline:
       pickString(["tagline", "description", "short_description", "summary", "subtitle"]) ?? "",
     long_description: pickString(["long_description", "full_description", "details", "content"]),
     category: pickString(["category", "tool_category", "type"]) ?? "General",
-    pricing: pickString(["pricing", "pricing_tier", "pricing_type", "price_type", "plan"]) ?? "Free",
+    pricing:
+      pickString(["pricing", "pricing_tier", "pricing_type", "price_type", "plan"]) ?? "Free",
     website_url: pickString(["website_url", "url", "website", "link", "homepage"]) ?? "",
     logo_url: pickString(["logo_url", "logo", "image_url", "icon_url"]),
     featured: Boolean(row?.["featured"] ?? row?.["is_featured"] ?? row?.["starred"]),

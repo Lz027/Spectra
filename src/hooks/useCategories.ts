@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabaseClient } from "@/lib/supabaseClient";
+import { supabaseClient } from "@/lib/supabase-client";
 
 export const useCategories = () => {
   const { data: categories = ["All"], isLoading } = useQuery({
@@ -14,9 +14,7 @@ export const useCategories = () => {
 
       const unique = [
         ...new Set(
-          (data as { category: string }[])
-            .map((t) => (t.category ?? "").trim())
-            .filter(Boolean),
+          (data as { category: string }[]).map((t) => (t.category ?? "").trim()).filter(Boolean),
         ),
       ];
 
