@@ -72,19 +72,6 @@ cd Spectra
 bun install
 ```
 
-Copy the environment template and add the public Supabase project values for your catalog:
-
-```bash
-cp .env.example .env.local
-```
-
-Then set the following variables in `.env.local`:
-
-```dotenv
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-public-anon-key
-```
-
 Start the development server:
 
 ```bash
@@ -110,8 +97,6 @@ Spectra queries the `tools` table and reads up to 500 rows. The normalizer accep
 | `featured`         | Whether the tool receives featured ordering     |
 | `created_at`       | Timestamp used by the Newest sort               |
 
-Because the browser uses a Supabase anonymous key, production projects should protect the table with appropriate Row Level Security policies and expose only the fields intended for public browsing.
-
 ## Available commands
 
 | Command             | Description                          |
@@ -127,7 +112,7 @@ Because the browser uses a Supabase anonymous key, production projects should pr
 
 Spectra keeps product behavior close to the page that uses it while extracting repeated concerns into focused components and hooks. Search and filter state is derived into a memoized display list, favorites are kept client-side for a fast personal workflow, and the root route provides a consistent error and not-found experience. Loading skeletons avoid a jarring first render while the catalog request is in flight.
 
-The repository also keeps generated routing output, dependency lockfiles, and build configuration under version control so that the project can be cloned and reproduced consistently. Platform-specific editor instructions and generated project metadata are intentionally excluded from the public codebase.
+The repository also keeps generated routing output, dependency lockfiles, and build configuration under version control so that the project can be cloned and reproduced consistently.
 
 ## Portfolio context
 
